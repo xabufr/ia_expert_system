@@ -1,3 +1,6 @@
+import unittest
+
+
 class Expert:
     def __init__(self, rules_manager, facts_manager):
         self.__rulesManager = rules_manager
@@ -70,15 +73,33 @@ class Fact:
         self.condition = condition
         self.value = value
 
+
+class ExpertTest(unittest.TestCase):
+    def setUp(self):
+        self.rules = RuleManager()
+        self.facts = FactsManager()
+        self.expert = Expert(self.rules, self.facts)
+        self.rules.add_rule(Rule("C", ["A", "B"]))
+        self.rules.add_rule(Rule("E", ["C", "D", "F"]))
+        self.rules.add_rule(Rule("D", ["C"]))
+
+    def test_one_iteration(self):
+        last_rule = self._return_result_for(["A", "B"])
+        assert last_rule.conclusion == "D"
+
+    def test_two_iteration(self):
+        last_rule = self._return_result_for(["A", "B", "F"])
+        assert last_rule.conclusion == "E"
+
+    def test_zero_iteration(self):
+        last_rule = self._return_result_for(["A", "F"])
+        assert last_rule
+
+    def _return_result_for(self, enabled):
+        for condition in enabled:
+            self.facts.set_fact_value(condition, True)
+        return self.expert.infer_forward()
+
+
 if __name__ == "__main__":
-    rules = RuleManager()
-    facts = FactsManager()
-    expert = Expert(rules, facts)
-
-    rules.add_rule(Rule("C", ["A", "B"]))
-    rules.add_rule(Rule("D", ["C"]))
-    facts.set_fact_value("A", True)
-    facts.set_fact_value("B", True)
-
-    lastRule = expert.infer_forward()
-    print lastRule.conclusion if lastRule else ""
+    unittest.main()
