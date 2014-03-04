@@ -1,28 +1,27 @@
-from ctypes import c_bool
 import unittest
 
 
 class Expert:
     def __init__(self, rules_manager, facts_manager):
-        self.__rulesManager = rules_manager
-        self.__factsManager = facts_manager
+        self.__rules = rules_manager
+        self.__facts = facts_manager
 
     def is_rule_valid(self, rule):
         for condition in rule.conditions:
-            if not self.__factsManager.is_condition_valid(condition):
+            if not self.__facts.is_condition_valid(condition):
                 return False
         return True
 
     def is_rule_already_valid(self, rule):
-        return self.__factsManager.is_condition_valid(rule.conclusion)
+        return self.__facts.is_condition_valid(rule.conclusion)
 
     def infer_forward(self):
         last_conclusion = None
         while True:
             modified = False
-            for rule in self.__rulesManager.rules:
+            for rule in self.__rules.rules:
                 if not self.is_rule_already_valid(rule) and self.is_rule_valid(rule):
-                    self.__factsManager.set_fact_value(rule.conclusion, True)
+                    self.__facts.set_fact_value(rule.conclusion, True)
                     modified = True
                     last_conclusion = rule
             if not modified:
@@ -30,7 +29,10 @@ class Expert:
         return last_conclusion
 
     def infer_backward(self):
-        pass
+        final_conclusions = self.__rules.find_conclusions()
+        for conclusion in final_conclusions:
+            if not self.__facts.is_fact_set(conclusion.conclusion):
+                pass
 
 
 class Rules:
@@ -42,16 +44,29 @@ class Rules:
 
     def find_conclusions(self):
         conclusions = []
-        for onerule in self.rules:
-            is_conclusion = True
-            for otherrule in self.rules:
-                if onerule.conclusion in otherrule.conditions:
-                    is_conclusion = False
-                    break
-
-            if is_conclusion:
-                conclusions.append(onerule)
+        for rule in self.rules:
+            if self.is_final_conclusion(rule):
+                conclusions.append(rule)
         return conclusions
+
+    def is_final_conclusion(self, rule_to_test):
+        for rule in self.rules:
+            if rule_to_test.conclusion in rule.conditions:
+                return False
+        return True
+
+    def is_initial_premice(self, premice):
+        for rule in self.rules:
+            if premice in rule.conclusion:
+                return False
+        return True
+
+    def find_by_conclusion(self, conclusion):
+        previous_rules = []
+        for rule in self.rules:
+            if rule.conclusion == conclusion:
+                previous_rules.append(rule)
+        return previous_rules
 
 
 class Facts:
@@ -71,6 +86,12 @@ class Facts:
             self.facts.append(fact)
         else:
             fact.value = value
+
+    def is_fact_set(self, fact_name):
+        for fact in self.facts:
+            if fact_name == fact.condition:
+                return True
+        return False
 
     def find_fact(self, condition):
         for fact in self.facts:
@@ -112,6 +133,31 @@ class ExpertTest(unittest.TestCase):
         last_rule = self._return_result_for(["A", "F"])
         assert last_rule == None
 
+    def test_is_a_initial_premice(self):
+        assert self.rules.is_initial_premice("A")
+        assert self.rules.is_initial_premice("B")
+        assert self.rules.is_initial_premice("F")
+        assert not self.rules.is_initial_premice("C")
+        assert not self.rules.is_initial_premice("D")
+        assert not self.rules.is_initial_premice("E")
+
+    def test_can_find_by_conclusion(self):
+        previous_rules = self.rules.find_by_conclusion("E")
+        for rule in previous_rules:
+            assert rule.conclusion == "E"
+
+    def test_is_all_premicies_false(self):
+        previous_rules = self.rules.find_by_conclusion("E")
+        for rule in previous_rules:
+            premicies = rule.conditions
+            for condition in premicies:
+                assert not self.facts.is_condition_valid(condition)
+
+    def test_some_rules_are_true(self):
+        self.facts.set_fact_value("C", True)
+        self.facts.set_fact_value("F", True)
+        previous_rules = self.rules.find_by_conclusion("E")
+
     def _return_result_for(self, enabled):
         for condition in enabled:
             self.facts.set_fact_value(condition, True)
@@ -134,7 +180,9 @@ class ExpertTest(unittest.TestCase):
         assert self._isconclusion_in_rules("I", conclusions)
         assert self._isconclusion_in_rules("E", conclusions)
 
-
+    def test_backward(self):
+        question = self.expert.infer_backward()
+        assert question == "A"
 
     def _isconclusion_in_rules(self, conclusion, rules):
         for rule in rules:
