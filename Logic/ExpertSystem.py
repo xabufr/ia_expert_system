@@ -1,3 +1,4 @@
+from ctypes import c_bool
 import unittest
 
 
@@ -28,16 +29,32 @@ class Expert:
                 break
         return last_conclusion
 
+    def infer_backward(self):
+        pass
 
-class RuleManager:
+
+class Rules:
     def __init__(self):
         self.rules = []
 
     def add_rule(self, rule):
         self.rules.append(rule)
 
+    def find_conclusions(self):
+        conclusions = []
+        for onerule in self.rules:
+            is_conclusion = True
+            for otherrule in self.rules:
+                if onerule.conclusion in otherrule.conditions:
+                    is_conclusion = False
+                    break
 
-class FactsManager:
+            if is_conclusion:
+                conclusions.append(onerule)
+        return conclusions
+
+
+class Facts:
     def __init__(self):
         self.facts = []
 
@@ -76,8 +93,8 @@ class Fact:
 
 class ExpertTest(unittest.TestCase):
     def setUp(self):
-        self.rules = RuleManager()
-        self.facts = FactsManager()
+        self.rules = Rules()
+        self.facts = Facts()
         self.expert = Expert(self.rules, self.facts)
         self.rules.add_rule(Rule("C", ["A", "B"]))
         self.rules.add_rule(Rule("E", ["C", "D", "F"]))
@@ -93,13 +110,37 @@ class ExpertTest(unittest.TestCase):
 
     def test_zero_iteration(self):
         last_rule = self._return_result_for(["A", "F"])
-        assert last_rule
+        assert last_rule == None
 
     def _return_result_for(self, enabled):
         for condition in enabled:
             self.facts.set_fact_value(condition, True)
         return self.expert.infer_forward()
 
+    def test_find_one_conclusion(self):
+        assert len(self.rules.find_conclusions()) == 1
+        assert 'E' == self.rules.find_conclusions()[0].conclusion
+
+    def test_find_no_conclusion(self):
+        self.rules.add_rule(Rule("A", ["E"]))
+        assert len(self.rules.find_conclusions()) == 0
+
+    def test_find_multiple_conclusion(self):
+        self.rules.add_rule(Rule("G", ["H"]))
+        self.rules.add_rule(Rule("I", ["D"]))
+        conclusions = self.rules.find_conclusions()
+        assert len(conclusions) == 3
+        assert self._isconclusion_in_rules("G", conclusions)
+        assert self._isconclusion_in_rules("I", conclusions)
+        assert self._isconclusion_in_rules("E", conclusions)
+
+
+
+    def _isconclusion_in_rules(self, conclusion, rules):
+        for rule in rules:
+            if conclusion == rule.conclusion:
+                return True
+        return False
 
 if __name__ == "__main__":
     unittest.main()
