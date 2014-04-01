@@ -29,10 +29,11 @@ class Expert:
         return last_conclusion
 
     def infer_backward(self):
-        final_conclusions = self.__rules.find_conclusions()
-        for conclusion in final_conclusions:
-            if not self.__facts.is_fact_set(conclusion.conclusion):
-                pass
+        premises = self.__rules.find_premises()
+        for premise in premises:
+            if not self.__facts.is_fact_set(premise):
+                return premise
+        return None
 
 
 class Rules:
@@ -42,62 +43,36 @@ class Rules:
     def add_rule(self, rule):
         self.rules.append(rule)
 
-    def find_conclusions(self):
-        conclusions = []
+    def is_initial_premise(self, premise):
         for rule in self.rules:
-            if self.is_final_conclusion(rule):
-                conclusions.append(rule)
-        return conclusions
-
-    def is_final_conclusion(self, rule_to_test):
-        for rule in self.rules:
-            if rule_to_test.conclusion in rule.conditions:
+            if premise in rule.conclusion:
                 return False
         return True
 
-    def is_initial_premice(self, premice):
+    def find_premises(self):
+        premises = []
+        # version grande classe!
+        # [premises.append(premise) for rule in self.rules for premise in rule.conditions if self.is_initial_premise(premise) and premise not in premises]
+        # return premises
         for rule in self.rules:
-            if premice in rule.conclusion:
-                return False
-        return True
-
-    def find_by_conclusion(self, conclusion):
-        previous_rules = []
-        for rule in self.rules:
-            if rule.conclusion == conclusion:
-                previous_rules.append(rule)
-        return previous_rules
+            for premise in rule.conditions:
+                if self.is_initial_premise(premise) and premise not in premises:
+                    premises.append(premise)
+        return premises
 
 
 class Facts:
     def __init__(self):
-        self.facts = []
+        self.facts = {}
 
     def is_condition_valid(self, condition):
-        for fact in self.facts:
-            if fact.value and fact.condition == condition:
-                return True
-        return False
+        return self.facts[condition] if condition in self.facts else False
 
     def set_fact_value(self, condition, value):
-        fact = self.find_fact(condition)
-        if fact is None:
-            fact = Fact(condition, value)
-            self.facts.append(fact)
-        else:
-            fact.value = value
+        self.facts[condition] = value
 
     def is_fact_set(self, fact_name):
-        for fact in self.facts:
-            if fact_name == fact.condition:
-                return True
-        return False
-
-    def find_fact(self, condition):
-        for fact in self.facts:
-            if fact.condition == condition:
-                return fact
-        return None
+        return fact_name in self.facts
 
 
 class Rule:
@@ -131,60 +106,49 @@ class ExpertTest(unittest.TestCase):
 
     def test_zero_iteration(self):
         last_rule = self._return_result_for(["A", "F"])
-        assert last_rule == None
+        assert last_rule is None
 
-    def test_is_a_initial_premice(self):
-        assert self.rules.is_initial_premice("A")
-        assert self.rules.is_initial_premice("B")
-        assert self.rules.is_initial_premice("F")
-        assert not self.rules.is_initial_premice("C")
-        assert not self.rules.is_initial_premice("D")
-        assert not self.rules.is_initial_premice("E")
+    def test_is_a_initial_premise(self):
+        assert self.rules.is_initial_premise("A")
+        assert self.rules.is_initial_premise("B")
+        assert self.rules.is_initial_premise("F")
+        assert not self.rules.is_initial_premise("C")
+        assert not self.rules.is_initial_premise("D")
+        assert not self.rules.is_initial_premise("E")
 
-    def test_can_find_by_conclusion(self):
-        previous_rules = self.rules.find_by_conclusion("E")
-        for rule in previous_rules:
-            assert rule.conclusion == "E"
+    def test_if_fact_is_not_set(self):
+        for fact in ["A", "B", "C"]:
+            assert not self.facts.is_fact_set(fact)
 
-    def test_is_all_premicies_false(self):
-        previous_rules = self.rules.find_by_conclusion("E")
-        for rule in previous_rules:
-            premicies = rule.conditions
-            for condition in premicies:
-                assert not self.facts.is_condition_valid(condition)
+    def test_if_fact_set(self):
+        assert not self.facts.is_fact_set("A")
+        self.facts.set_fact_value("A", True)
+        assert self.facts.is_fact_set("A")
+        self.facts.set_fact_value("A", False)
+        assert self.facts.is_fact_set("A")
 
-    def test_some_rules_are_true(self):
-        self.facts.set_fact_value("C", True)
-        self.facts.set_fact_value("F", True)
-        previous_rules = self.rules.find_by_conclusion("E")
+        assert not self.facts.is_fact_set("B")
+        self.facts.set_fact_value("B", False)
+        assert self.facts.is_fact_set("B")
+        self.facts.set_fact_value("B", True)
+        assert self.facts.is_fact_set("B")
 
     def _return_result_for(self, enabled):
         for condition in enabled:
             self.facts.set_fact_value(condition, True)
         return self.expert.infer_forward()
 
-    def test_find_one_conclusion(self):
-        assert len(self.rules.find_conclusions()) == 1
-        assert 'E' == self.rules.find_conclusions()[0].conclusion
-
-    def test_find_no_conclusion(self):
-        self.rules.add_rule(Rule("A", ["E"]))
-        assert len(self.rules.find_conclusions()) == 0
-
-    def test_find_multiple_conclusion(self):
-        self.rules.add_rule(Rule("G", ["H"]))
-        self.rules.add_rule(Rule("I", ["D"]))
-        conclusions = self.rules.find_conclusions()
-        assert len(conclusions) == 3
-        assert self._isconclusion_in_rules("G", conclusions)
-        assert self._isconclusion_in_rules("I", conclusions)
-        assert self._isconclusion_in_rules("E", conclusions)
-
     def test_backward(self):
         question = self.expert.infer_backward()
         assert question == "A"
 
-    def _isconclusion_in_rules(self, conclusion, rules):
+    def test_can_retrieve_initial_premises(self):
+        premises = self.rules.find_premises()
+        assert len(premises) == 3
+        for premise in ["A", "B", "F"]:
+            assert premise in premises
+
+    def _is_conclusion_in_rules(self, conclusion, rules):
         for rule in rules:
             if conclusion == rule.conclusion:
                 return True
