@@ -132,7 +132,9 @@ class EditorMainWindow(QObject):
         return conditions
 
     def __get_labels(self):
-        return self.__get_all_conditions()
+        labels = self.__get_all_conditions()
+        [labels.append(label) for label in self.__model.keys() if label not in labels]
+        return labels
 
     def __get_initial_premises(self):
         labels = self.__get_all_conditions()
@@ -143,6 +145,7 @@ class EditorMainWindow(QObject):
         self.__fill_initial_premises()
         self.__fill_final_conclusions()
         self.__fill_intermediate_conclusions()
+        self.__fill_labels()
 
     def __fill_initial_premises(self):
         initial = self.__get_initial_premises()
@@ -171,3 +174,9 @@ class EditorMainWindow(QObject):
         intermediate_conclusions = self.__find_intermediate_conclusions()
         for intermediate_conclusion in intermediate_conclusions:
             self.__ui.intermediate_conclusions.addItem(intermediate_conclusion)
+
+    def __fill_labels(self):
+        labels = self.__get_labels()
+        self.__ui.labels.clear()
+        for label in labels:
+            self.__ui.labels.addItem(label)
