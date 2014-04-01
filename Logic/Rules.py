@@ -43,6 +43,7 @@ class Rules:
 
     def __eq__(self, other):
         return self.rules == other.rules
+
     def is_terminal_rule(self, rule_to_test):
         for rule in self.rules:
             if rule is not rule_to_test and rule_to_test.conclusion in rule.conditions:
