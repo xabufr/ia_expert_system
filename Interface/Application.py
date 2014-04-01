@@ -12,18 +12,9 @@ import locale
 
 
 class Application(QObject):
-    def __setup_language(self):
-        system_locale, _ = locale.getdefaultlocale()
-        print system_locale
-        search_folder = os.path.dirname(__file__)
-        path_join = os.path.join(search_folder, "..", "translations")
-        print path_join
-        self.__translator = QTranslator()
-        self.__translator.load(system_locale, path_join)
-        self.__app.installTranslator(self.__translator)
-
     def __init__(self):
         QObject.__init__(self)
+        self.__translator = QTranslator()
         self.__rules = Rules.Rules()
         self.__facts = Facts.Facts()
         self.expert = ExpertSystem.Expert(self.__rules, self.__facts)
@@ -42,6 +33,13 @@ class Application(QObject):
         self.__init_ui()
 
         self.reset()
+
+    def __setup_language(self):
+        system_locale, _ = locale.getdefaultlocale()
+        search_folder = os.path.dirname(__file__)
+        search_folder = os.path.join(search_folder, "..", "translations")
+        self.__translator.load(system_locale, search_folder)
+        self.__app.installTranslator(self.__translator)
 
     def __init_ui(self):
         self.__load_ui()
@@ -62,6 +60,7 @@ class Application(QObject):
         self.__ui.answer.button(QtGui.QDialogButtonBox.Yes).clicked.connect(self.slot_answer_clicked_yes)
         self.__ui.answer.button(QtGui.QDialogButtonBox.No).clicked.connect(self.slot_answer_clicked_no)
         self.__ui.actionNew.triggered.connect(self.reset)
+        self.__ui.actionLoadRules.triggered.connect(self.load_rules)
 
     def slot_answer_clicked_yes(self):
         self.slot_answer_clicked(True)
@@ -84,7 +83,7 @@ class Application(QObject):
 
     def add_answer_to_list(self, question, answer):
         count = self.__ui.answerTableWidget.rowCount()
-        self.__ui.answerTableWidget.setRowCount(count+1)
+        self.__ui.answerTableWidget.setRowCount(count + 1)
         self.__ui.answerTableWidget.setItem(count, 0, QtGui.QTableWidgetItem(question))
         answer_text = self.tr("Yes") if answer else self.tr("No")
         self.__ui.answerTableWidget.setItem(count, 1, QtGui.QTableWidgetItem(answer_text))
@@ -114,6 +113,13 @@ class Application(QObject):
     def finished(self):
         self.__ui.answer.setEnabled(False)
         self.__finished = True
+
+    def load_rules(self):
+        file_path, file_filter = QtGui.QFileDialog.getOpenFileName(self.__ui, self.tr("Select rules file"), "",
+                                                                   self.tr("Rules file") + " (*.rules);;")
+        if file_path != "" and file_filter != "":
+            pass
+
 
 if __name__ == "__main__":
     application = Application()
