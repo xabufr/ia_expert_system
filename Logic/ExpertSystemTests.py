@@ -1,7 +1,7 @@
 import unittest
-from Logic.ExpertSystem import Expert
-from Logic.Facts import Facts
-from Logic.Rules import Rules, Rule
+from ExpertSystem import Expert
+from Facts import Facts
+from Rules import Rules, Rule
 
 
 class ExpertTest(unittest.TestCase):

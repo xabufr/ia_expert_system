@@ -22,6 +22,12 @@ class Rules:
                     premises.append(premise)
         return premises
 
+    def is_terminal_rule(self, rule_to_test):
+        for rule in self.rules:
+            if rule is not rule_to_test and rule_to_test.conclusion in rule.conditions:
+                return False
+        return True
+
 
 class Rule:
     def __init__(self, conclusion, conditions):
