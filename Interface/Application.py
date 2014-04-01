@@ -2,15 +2,28 @@ from PySide.QtGui import QApplication
 from PySide.QtCore import QFile
 from PySide import QtUiTools
 from PySide import QtGui
+from PySide.QtCore import QTranslator, QObject
 
 from Logic import ExpertSystem, Facts, Rules
 
 import sys
 import os.path
+import locale
 
 
-class Application():
+class Application(QObject):
+    def __setup_language(self):
+        system_locale, _ = locale.getdefaultlocale()
+        print system_locale
+        search_folder = os.path.dirname(__file__)
+        path_join = os.path.join(search_folder, "..", "translations")
+        print path_join
+        self.__translator = QTranslator()
+        self.__translator.load(system_locale, path_join)
+        self.__app.installTranslator(self.__translator)
+
     def __init__(self):
+        QObject.__init__(self)
         self.__rules = Rules.Rules()
         self.__facts = Facts.Facts()
         self.expert = ExpertSystem.Expert(self.__rules, self.__facts)
@@ -24,6 +37,8 @@ class Application():
         self.__rules.add_rule(Rules.Rule("D", ["C"]))
 
         self.__app = QApplication(sys.argv)
+
+        self.__setup_language()
         self.__init_ui()
 
         self.reset()
@@ -41,7 +56,7 @@ class Application():
         self.__ui = ui_loader.load(ui_file, None)
         ui_file.close()
 
-        self.__ui.answerTableWidget.setHorizontalHeaderLabels(["Question", "Answer"])
+        self.__ui.answerTableWidget.setHorizontalHeaderLabels([self.tr("Question"), self.tr("Answer")])
 
     def __setup_slots(self):
         self.__ui.answer.button(QtGui.QDialogButtonBox.Yes).clicked.connect(self.slot_answer_clicked_yes)
@@ -59,7 +74,7 @@ class Application():
         self.add_answer_to_list(self.current_question, answer)
 
         conclusion_rule = self.expert.infer_forward()
-        conclusion_text = self.__ui.tr("Can't conclude")
+        conclusion_text = self.tr("Can't conclude")
         if conclusion_rule is not None and self.__rules.is_terminal_rule(conclusion_rule):
             conclusion_text = conclusion_rule.conclusion
             self.finished()
@@ -71,13 +86,14 @@ class Application():
         count = self.__ui.answerTableWidget.rowCount()
         self.__ui.answerTableWidget.setRowCount(count+1)
         self.__ui.answerTableWidget.setItem(count, 0, QtGui.QTableWidgetItem(question))
-        self.__ui.answerTableWidget.setItem(count, 1, QtGui.QTableWidgetItem(self.__ui.tr("Yes" if answer else "No")))
+        answer_text = self.tr("Yes") if answer else self.tr("No")
+        self.__ui.answerTableWidget.setItem(count, 1, QtGui.QTableWidgetItem(answer_text))
 
     def reset(self):
         self.__facts.reset()
         self.__ui.answer.setEnabled(True)
         self.__ui.answerTableWidget.setRowCount(0)
-        self.__ui.conclusionLabel.setText(self.__ui.tr("Can't conclude"))
+        self.__ui.conclusionLabel.setText(self.tr("Can't conclude"))
         self.__finished = False
         self.next_answer()
 
@@ -92,7 +108,7 @@ class Application():
         else:
             question = None
             self.finished()
-        question = self.__ui.tr("Plus de question !") if question is None else question
+        question = self.tr("No more questions!") if question is None else question
         self.__ui.questionLabel.setText(question)
 
     def finished(self):
