@@ -10,3 +10,6 @@ class Facts:
 
     def is_fact_set(self, fact_name):
         return fact_name in self.facts
+
+    def reset(self):
+        self.facts = {}
