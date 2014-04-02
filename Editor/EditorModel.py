@@ -20,7 +20,6 @@ class EditorModel():
 
     def del_condition(self, positionner):
         """
-        :param condition:
         :param positionner:
         :type positionner: EditorModelPositionner
         """
