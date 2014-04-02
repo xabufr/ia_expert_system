@@ -38,6 +38,11 @@ class EditorMainWindow(QObject):
         self.__ui.btn_delete_premise.clicked.connect(self.__del_current_condition)
         self.__ui.premises.currentItemChanged.connect(self.__condition_changed)
 
+        self.__ui.labels.itemActivated.connect(self.__rename_item)
+        self.__ui.initial_premises.itemActivated.connect(self.__rename_item)
+        self.__ui.intermediate_conclusions.itemActivated.connect(self.__rename_item)
+        self.__ui.final_conclusions.itemActivated.connect(self.__rename_item)
+
     def __add_fact(self):
         rule_conclusion, entered = QInputDialog.getText(self.__ui, self.tr("Enter rule conclusion label"),
                                                         self.tr("Conclusion"))
@@ -141,3 +146,11 @@ class EditorMainWindow(QObject):
         self.__ui.labels.clear()
         for label in labels:
             self.__ui.labels.addItem(label)
+
+    def __rename_item(self, item):
+        new_name, is_entered = QInputDialog.getText(self.__ui, self.tr("Rename label"),
+                                                    self.tr("New label name for '%s'") % item.text())
+        if is_entered:
+            self.__model.rename(item.text(), new_name)
+            self.__current_model_position.reset()
+            self.__fill_facts()

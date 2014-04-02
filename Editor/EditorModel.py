@@ -115,7 +115,6 @@ class EditorModel():
                 new_model[new_index] = []
             for rule in self.model[index]:
                 new_rule = []
-                print(rule)
                 for condition in rule:
                     if condition == old_name:
                         condition = new_name
