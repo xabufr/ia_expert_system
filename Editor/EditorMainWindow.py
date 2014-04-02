@@ -35,6 +35,8 @@ class EditorMainWindow(QObject):
         self.__ui.rules.currentItemChanged.connect(self.__rule_changed)
 
         self.__ui.btn_add_premise.clicked.connect(self.__add_condition_to_current_rule)
+        self.__ui.btn_delete_premise.clicked.connect(self.__del_current_condition)
+        self.__ui.premises.currentItemChanged.connect(self.__condition_changed)
 
     def __add_fact(self):
         rule_conclusion, entered = QInputDialog.getText(self.__ui, self.tr("Enter rule conclusion label"),
@@ -64,6 +66,10 @@ class EditorMainWindow(QObject):
             self.__current_model_position.rule_index = rule_item.text()
         self.__load_premises_for_current_rule()
 
+    def __condition_changed(self, condition_item):
+        if condition_item:
+            self.__current_model_position.condition = condition_item.text()
+
     def __load_rules_for_current_fact(self):
         self.__ui.rules.clear()
         rules = self.__model.get_fact_rules(self.__current_model_position)
@@ -84,6 +90,10 @@ class EditorMainWindow(QObject):
         self.__load_rules_for_current_fact()
         if self.__model.get_fact_rules(self.__current_model_position):
             self.__ui.rules.setCurrentRow(0)
+
+    def __del_current_condition(self):
+        self.__model.del_condition(self.__current_model_position)
+        self.__load_premises_for_current_rule()
 
     def __load_premises_for_current_rule(self):
         premises = self.__model.get_rule_by_index(self.__current_model_position)
