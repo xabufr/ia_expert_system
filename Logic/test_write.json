@@ -1,13 +1,12 @@
 {
     "rules": [
         {
+            "conclusion": "truc", 
             "conditions": [
-                "1",
-                "2",
+                "1", 
+                "2", 
                 "3"
-            ],
-            "id": "688b2053-d674-4b90-8c3b-762d59da2644",
-            "conclusion": "truc"
+            ]
         }
     ]
 }

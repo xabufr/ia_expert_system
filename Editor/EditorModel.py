@@ -1,4 +1,6 @@
 import unittest
+from Logic.Rules import Rules, Rule
+from Logic import RulesJsonSerializer
 
 
 class EditorModel():
@@ -120,6 +122,25 @@ class EditorModel():
                     new_rule.append(condition)
                 new_model[new_index].append(new_rule)
         self.model = new_model
+
+    def get_rules(self):
+        rules = Rules()
+        for conclusion in self.model.keys():
+            for rule_set in self.model[conclusion]:
+                rule = Rule(conclusion, rule_set)
+                rules.add_rule(rule)
+        return rules
+
+    def save_to_file(self, file_path):
+        RulesJsonSerializer.save_rules(file_path, self.get_rules())
+
+    def load_from_rules(self, file_name):
+        rules = RulesJsonSerializer.charge_rules(file_name)
+        self.model = {}
+        for rule in rules.rules:
+            if rule.conclusion not in self.model:
+                self.model[rule.conclusion] = []
+            self.model[rule.conclusion].append(rule.conditions)
 
 
 class EditorModelPositionner():
@@ -287,3 +308,7 @@ class EditorModelTests(unittest.TestCase):
             1]) or (
                    "hello2" in self.model.get_fact_rules(position)[1] and "hello" in
                    self.model.get_fact_rules(position)[0])
+
+    def test_save_and_load(self):
+        self.test_add()
+        self.model.save_to_file("/home/thomas/PycharmProjects/ia_expert_system/Editor/test.json")

@@ -52,8 +52,7 @@ class Rules:
 
 
 class Rule:
-    def __init__(self, conclusion, conditions, id=None):
-        self.id = id if id is not None else uuid4().__str__()
+    def __init__(self, conclusion, conditions):
         self.conclusion = conclusion
         self.conditions = conditions
         pass
@@ -62,7 +61,7 @@ class Rule:
         return self.__dict__
 
     def deserialize(self, json_object):
-        return Rule(json_object["conclusion"], json_object["conditions"], json_object["id"])
+        return Rule(json_object["conclusion"], json_object["conditions"])
 
     def __eq__(self, other):
-        return self.conclusion == other.conclusion and self.conditions == other.conditions and self.id == other.id
+        return self.conclusion == other.conclusion and self.conditions == other.conditions

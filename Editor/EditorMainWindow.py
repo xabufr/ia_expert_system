@@ -2,6 +2,7 @@ import os
 from PySide.QtUiTools import QUiLoader
 from PySide.QtCore import QObject, QFile
 from PySide.QtGui import QInputDialog
+from PySide.QtGui import QFileDialog
 from EditorModel import EditorModel, EditorModelPositionner
 
 
@@ -12,6 +13,7 @@ class EditorMainWindow(QObject):
         self.__setup_ui()
         self.__model = EditorModel()
         self.__current_model_position = EditorModelPositionner()
+        self.__current_file = None
 
     def __load_ui(self):
         ui_path = os.path.join(os.path.dirname(__file__), "MainWindow.ui")
@@ -28,7 +30,7 @@ class EditorMainWindow(QObject):
     def __setup_slots(self):
         self.__ui.btn_add_fact.clicked.connect(self.__add_fact)
         self.__ui.btn_delete_fact.clicked.connect(self.__delete_facts)
-        self.__ui.facts.currentItemChanged.connect(self.__fact_changed)
+        self.__ui.conclusions.currentItemChanged.connect(self.__fact_changed)
 
         self.__ui.btn_add_rule.clicked.connect(self.__add_rule_for_current_fact)
         self.__ui.btn_delete_rule.clicked.connect(self.__del_rule_for_current_fact)
@@ -36,12 +38,16 @@ class EditorMainWindow(QObject):
 
         self.__ui.btn_add_premise.clicked.connect(self.__add_condition_to_current_rule)
         self.__ui.btn_delete_premise.clicked.connect(self.__del_current_condition)
-        self.__ui.premises.currentItemChanged.connect(self.__condition_changed)
+        self.__ui.conditions.currentItemChanged.connect(self.__condition_changed)
 
         self.__ui.labels.itemActivated.connect(self.__rename_item)
         self.__ui.initial_premises.itemActivated.connect(self.__rename_item)
         self.__ui.intermediate_conclusions.itemActivated.connect(self.__rename_item)
         self.__ui.final_conclusions.itemActivated.connect(self.__rename_item)
+
+        self.__ui.actionLoad_file.triggered.connect(self.__load_from_file)
+        self.__ui.actionSave.triggered.connect(self.__save)
+        self.__ui.actionSave_as.triggered.connect(self.__save_as)
 
     def __add_fact(self):
         rule_conclusion, entered = QInputDialog.getText(self.__ui, self.tr("Enter rule conclusion label"),
@@ -51,10 +57,10 @@ class EditorMainWindow(QObject):
             self.__fill_facts()
 
     def __fill_facts(self):
-        self.__ui.facts.clear()
+        self.__ui.conclusions.clear()
         for fact in self.__model.get_facts():
-            self.__ui.facts.addItem(fact)
-        self.__ui.facts.setCurrentRow(self.__ui.facts.count() - 1)
+            self.__ui.conclusions.addItem(fact)
+        self.__ui.conclusions.setCurrentRow(self.__ui.conclusions.count() - 1)
         self.__update_helpers()
 
     def __delete_facts(self):
@@ -102,12 +108,12 @@ class EditorMainWindow(QObject):
 
     def __load_premises_for_current_rule(self):
         premises = self.__model.get_rule_by_index(self.__current_model_position)
-        self.__ui.premises.clear()
+        self.__ui.conditions.clear()
         if premises is not None:
             for premise in premises:
-                self.__ui.premises.addItem(premise)
+                self.__ui.conditions.addItem(premise)
             if premises:
-                self.__ui.premises.setCurrentRow(0)
+                self.__ui.conditions.setCurrentRow(0)
 
     def __add_condition_to_current_rule(self):
         if self.__current_model_position.rule_index is not None:
@@ -154,3 +160,27 @@ class EditorMainWindow(QObject):
             self.__model.rename(item.text(), new_name)
             self.__current_model_position.reset()
             self.__fill_facts()
+
+    def __load_from_file(self):
+        file_path, file_filter = QFileDialog.getOpenFileName(self.__ui, self.tr("Select rules file"), "",
+                                                                   self.tr("Rules file") + " (*.rules);;")
+        if file_path == "":
+            return
+        if file_filter == "":
+            file_path += ".rules"
+        self.__model.load_from_rules(file_path)
+        self.__fill_facts()
+
+    def __save(self):
+        if self.__current_file is None:
+            self.__save_as()
+        else:
+            self.__model.save_to_file(self.__current_file)
+
+
+    def __save_as(self):
+        file_path, file_filter = QFileDialog.getSaveFileName(self.__ui, self.tr("Select rules file"), "",
+                                                             self.tr("Rules file") + " (*.rules);;")
+        if file_filter != "" and file_path != "":
+            self.__current_file = file_path
+            self.__save()

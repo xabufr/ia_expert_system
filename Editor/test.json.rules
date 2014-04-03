@@ -1,0 +1,10 @@
+{
+    "rules": [
+        {
+            "conclusion": "coucou", 
+            "conditions": [
+                "hello"
+            ]
+        }
+    ]
+}
