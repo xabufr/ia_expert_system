@@ -59,13 +59,13 @@ class QmlApplication(QObject):
         self.next_question()
 
 
-
 app = QApplication(sys.argv)
 view = QDeclarativeView()
 
 view.setWindowFlags(Qt.FramelessWindowHint)
 view.setSource(os.path.join(os.path.dirname(__file__), "QML_Interface.qml"))
 root = view.rootObject()
+view.engine().quit.connect(view.close)
 
 view.show()
 

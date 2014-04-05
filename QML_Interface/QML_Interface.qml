@@ -101,6 +101,24 @@ Rectangle {
         }
     }
 
+    Button {
+        id: btnClose
+        x: 380
+        y: 286
+        width: 71
+        height: 14
+        color: "#40ffffff"
+        text: qsTr("Close")
+        anchors.right: parent.right
+        anchors.rightMargin: 0
+        anchors.bottom: parent.bottom
+        anchors.bottomMargin: 0
+        mouseOverColor: "#ffffff"
+        onClicked: {
+            Qt.quit()
+        }
+    }
+
     states: [
         State {
             name: "finished"
