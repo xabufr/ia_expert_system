@@ -124,13 +124,37 @@ Rectangle {
             name: "finished"
             when: finished
             PropertyChanges {
+                target: btnYes
+                clickAllowed: false
+            }
+            PropertyChanges {
+                target: btnNo
+                clickAllowed: false
             }
 
             PropertyChanges {
                 target: row1
+                opacity: 0
                 visible: false
             }
         }
     ]
+
+    transitions: Transition {
+        from: ""
+        to: "finished"
+        reversible: true
+        SequentialAnimation {
+            PropertyAnimation {
+                target: row1
+                properties: "opacity"
+                duration: 500
+            }
+            PropertyAnimation {
+                target: row1
+                properties: "visible"
+            }
+        }
+    }
 }
 

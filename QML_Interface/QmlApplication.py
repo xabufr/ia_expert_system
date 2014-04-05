@@ -34,7 +34,7 @@ class QmlApplication(QObject):
 
         if answer is not None and self.rules.is_terminal_rule(answer):
             self.set_finished_state(True)
-            self.set_dialog_text(answer.conclusion)
+            self.set_dialog_text(self.tr("I conclude that:\n %s") % answer.conclusion)
         else:
             self.next_question()
 
@@ -70,6 +70,5 @@ view.engine().quit.connect(view.close)
 view.show()
 
 logic = QmlApplication(root)
-
 
 sys.exit(app.exec_())

@@ -9,16 +9,17 @@ Rectangle {
     smooth: true
     property color mouseOverColor: "#ff0000"
     property string text: "Button !"
+    property bool clickAllowed: true
 
     signal clicked
-    signal lAtest
 
     MouseArea {
         id: mouseArea
         anchors.fill: parent
         hoverEnabled: true
         onClicked: {
-            button.clicked()
+            if(clickAllowed)
+                button.clicked()
         }
     }
     Text {
