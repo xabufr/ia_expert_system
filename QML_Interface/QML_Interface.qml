@@ -14,11 +14,51 @@ Rectangle {
     signal restartProcess
 
 
+    MouseArea {
+        id: mouseArea
+        anchors.fill: parent
+        property variant clickPos: "1,1"
+        property variant resize: false
+        z: 1
+
+        onPressed: {
+            clickPos = Qt.point(mouse.x, mouse.y)
+            if(clickPos.x >= mainWindow.size.width - 10 ||
+                    clickPos.y >= mainWindow.size.height - 10 ) {
+                resize = {
+                    x: clickPos.x >= mainWindow.size.width - 10,
+                    y: clickPos.y >= mainWindow.size.height - 10
+                }
+            }
+            else
+                resize = false
+        }
+
+        onPositionChanged: {
+            var delta = Qt.size(mouse.x - clickPos.x, mouse.y - clickPos.y)
+            if(resize !== false) {
+                var newSize = Qt.size(mainWindow.size.width, mainWindow.size.height)
+                if(resize.x === true) {
+                    newSize.width += delta.width
+                }
+                if(resize.y === true) {
+                    newSize.height += delta.height
+                }
+                mainWindow.size = newSize
+                parent.height = mainWindow.size.height
+                parent.width = mainWindow.size.width
+                clickPos = Qt.point(mouse.x, mouse.y)
+            }
+            else
+                mainWindow.pos = Qt.point(mainWindow.pos.x + delta.width, mainWindow.pos.y + delta.height)
+        }
+    }
+
     Image {
         id: image1
         x: 0
         y: 0
-        z: 0
+        z: 1
         anchors.rightMargin: 0
         anchors.bottomMargin: 0
         anchors.leftMargin: 0
@@ -36,6 +76,7 @@ Rectangle {
         height: 14
         color: "#40ffffff"
         text: qsTr("Restart")
+        z: 2
         anchors.bottom: parent.bottom
         anchors.bottomMargin: 0
         mouseOverColor: "#ffffff"
@@ -46,6 +87,7 @@ Rectangle {
 
     Column {
         id: column1
+        z: 2
         anchors.fill: parent
         spacing: 5
 
@@ -109,6 +151,7 @@ Rectangle {
         height: 14
         color: "#40ffffff"
         text: qsTr("Close")
+        z: 2
         anchors.right: parent.right
         anchors.rightMargin: 0
         anchors.bottom: parent.bottom
@@ -118,6 +161,7 @@ Rectangle {
             Qt.quit()
         }
     }
+
 
     states: [
         State {

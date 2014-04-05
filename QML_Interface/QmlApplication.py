@@ -61,6 +61,7 @@ class QmlApplication(QObject):
 
 app = QApplication(sys.argv)
 view = QDeclarativeView()
+view.rootContext().setContextProperty("mainWindow", view)
 
 view.setWindowFlags(Qt.FramelessWindowHint)
 view.setSource(os.path.join(os.path.dirname(__file__), "QML_Interface.qml"))
