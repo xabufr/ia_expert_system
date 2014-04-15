@@ -1,5 +1,10 @@
+import sys
+import os.path
+
+sys.path.insert(0, os.path.join(os.path.dirname(__file__), ".."))
+
 from PySide.QtDeclarative import *
-from PyQt4.QtCore import QObject, Qt
+from PySide.QtCore import QObject, Qt
 from PySide.QtGui import QApplication
 from Logic.Rules import Rules, Rule
 from Logic.ExpertSystem import Expert
