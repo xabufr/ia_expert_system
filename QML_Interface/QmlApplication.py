@@ -1,18 +1,20 @@
 from PySide.QtDeclarative import *
-from PyQt4.QtCore import QObject, Qt
+from PySide.QtCore import QObject, Qt
 from PySide.QtGui import QApplication
 from Logic.Rules import Rules, Rule
 from Logic.ExpertSystem import Expert
 from Logic.Facts import Facts
 
+import tts
 import sys
 import os
 
 
 class QmlApplication(QObject):
-    def __init__(self, root):
+    def __init__(self, root, tts_module):
         QObject.__init__(self)
         self.root = root
+        self.tts = tts_module
         self.rules = Rules()
         self.facts = Facts()
         self.current_question = None
@@ -34,7 +36,9 @@ class QmlApplication(QObject):
 
         if answer is not None and self.rules.is_terminal_rule(answer):
             self.set_finished_state(True)
-            self.set_dialog_text(self.tr("I conclude that:\n %s") % answer.conclusion)
+            content = self.tr("I conclude that:\n %s") % answer.conclusion
+            self.set_dialog_text(content)
+            self.tts.speak(content)
         else:
             self.next_question()
 
@@ -45,10 +49,13 @@ class QmlApplication(QObject):
         question = self.expert.infer_backward()
         self.current_question = question
         if question is None:
-            self.set_dialog_text(self.tr("Can't conclude!"))
+            content = self.tr("Can't conclude!")
+            self.set_dialog_text(content)
             self.set_finished_state(True)
+            self.tts.speak(content)
         else:
             self.set_dialog_text(question)
+            self.tts.speak(question)
 
     def set_finished_state(self, finished):
         self.root.setProperty("finished", finished)
@@ -59,6 +66,7 @@ class QmlApplication(QObject):
         self.next_question()
 
 
+tts_module = tts.tts("en")
 app = QApplication(sys.argv)
 view = QDeclarativeView()
 view.rootContext().setContextProperty("mainWindow", view)
@@ -70,6 +78,6 @@ view.engine().quit.connect(view.close)
 
 view.show()
 
-logic = QmlApplication(root)
+logic = QmlApplication(root, tts_module)
 
 sys.exit(app.exec_())
