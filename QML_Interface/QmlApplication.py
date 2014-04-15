@@ -11,8 +11,6 @@ from Logic.ExpertSystem import Expert
 from Logic.Facts import Facts
 
 import tts
-import sys
-import os
 
 
 class QmlApplication(QObject):
