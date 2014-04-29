@@ -19,8 +19,12 @@ class tts:
         try:
             with tempfile.NamedTemporaryFile('w+b', 0) as mp3file:
                 mp3file.write(r.data)
-                pygame.mixer.music.load(mp3file.name)
-                pygame.mixer.music.play()
+                if pygame.mixer.music.get_busy():
+                    pygame.mixer.music.queue(mp3file.name)
+                    pygame.mixer.music.play()
+                else:
+                    pygame.mixer.music.load(mp3file.name)
+                    pygame.mixer.music.play()
 
         finally:
             r.release_conn()
