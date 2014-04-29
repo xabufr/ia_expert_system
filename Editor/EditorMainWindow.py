@@ -1,8 +1,8 @@
 import os
 from PySide.QtUiTools import QUiLoader
-from PySide.QtCore import QObject, QFile
-from PySide.QtGui import QInputDialog
-from PySide.QtGui import QFileDialog, QLineEdit
+from PySide.QtCore import QObject, QFile, Qt
+from PySide.QtGui import QInputDialog, QKeySequence
+from PySide.QtGui import QFileDialog, QShortcut
 from EditorModel import EditorModel, EditorModelPositionner
 from pip import index
 
@@ -28,6 +28,12 @@ class EditorMainWindow(QObject):
         self.__setup_slots()
         self.__ui.show()
 
+    @staticmethod
+    def __add_delete_shortcut(widget, callback):
+        shortcut = QShortcut(QKeySequence.Delete, widget)
+        shortcut.setContext(Qt.WidgetWithChildrenShortcut)
+        shortcut.activated.connect(callback)
+
     def __setup_slots(self):
         self.__ui.btn_add_fact.clicked.connect(self.__add_fact)
         self.__ui.btn_delete_fact.clicked.connect(self.__delete_facts)
@@ -39,6 +45,11 @@ class EditorMainWindow(QObject):
 
         self.__ui.btn_add_premise.clicked.connect(self.__add_condition_to_current_rule)
         self.__ui.btn_delete_premise.clicked.connect(self.__del_current_condition)
+
+        self.__add_delete_shortcut(self.__ui.conditions, self.__del_current_condition)
+        self.__add_delete_shortcut(self.__ui.conclusions, self.__delete_facts)
+        self.__add_delete_shortcut(self.__ui.rules, self.__del_rule_for_current_fact)
+
         self.__ui.conditions.currentItemChanged.connect(self.__condition_changed)
 
         self.__ui.labels.itemActivated.connect(self.__rename_item)
