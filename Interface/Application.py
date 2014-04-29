@@ -4,7 +4,7 @@ from PySide import QtUiTools
 from PySide import QtGui
 from PySide.QtCore import QTranslator, QObject
 
-from Logic import ExpertSystem, Facts, Rules
+from Logic import ExpertSystem, Facts, Rules, RulesJsonSerializer
 
 import sys
 import os.path
@@ -118,7 +118,9 @@ class Application(QObject):
         file_path, file_filter = QtGui.QFileDialog.getOpenFileName(self.__ui, self.tr("Select rules file"), "",
                                                                    self.tr("Rules file") + " (*.rules);;")
         if file_path != "" and file_filter != "":
-            pass
+            self.__rules = RulesJsonSerializer.charge_rules(file_path)
+            self.expert = ExpertSystem.Expert(self.__rules, self.__facts)
+            self.reset()
 
 
 if __name__ == "__main__":
