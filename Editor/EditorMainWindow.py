@@ -2,7 +2,7 @@ import os
 from PySide.QtUiTools import QUiLoader
 from PySide.QtCore import QObject, QFile
 from PySide.QtGui import QInputDialog
-from PySide.QtGui import QFileDialog
+from PySide.QtGui import QFileDialog, QLineEdit
 from EditorModel import EditorModel, EditorModelPositionner
 
 
@@ -155,7 +155,8 @@ class EditorMainWindow(QObject):
 
     def __rename_item(self, item):
         new_name, is_entered = QInputDialog.getText(self.__ui, self.tr("Rename label"),
-                                                    self.tr("New label name for '%s'") % item.text())
+                                                    self.tr("New label name for '%s'") % item.text(),
+                                                    QLineEdit.Normal, item.text())
         if is_entered:
             self.__model.rename(item.text(), new_name)
             self.__current_model_position.reset()
@@ -163,7 +164,7 @@ class EditorMainWindow(QObject):
 
     def __load_from_file(self):
         file_path, file_filter = QFileDialog.getOpenFileName(self.__ui, self.tr("Select rules file"), "",
-                                                                   self.tr("Rules file") + " (*.rules);;")
+                                                             self.tr("Rules file") + " (*.rules);;")
         if file_path == "":
             return
         if file_filter == "":
