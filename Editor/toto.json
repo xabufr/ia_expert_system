@@ -1,0 +1,25 @@
+{
+    "rules": [
+        {
+            "conclusion": "Ajouter un \";\" apr\u00e8s classe/instruction/boucle conditionnelle", 
+            "conditions": [
+                "J'ai une erreur de syntaxe", 
+                "J'ai oubli\u00e9 un \";\" apr\u00e8s un do-while "
+            ]
+        }, 
+        {
+            "conclusion": "Ajouter un \";\" apr\u00e8s classe/instruction/boucle conditionnelle", 
+            "conditions": [
+                "J'ai une erreur de syntaxe", 
+                "J'ai oubli\u00e9 un \";\" apr\u00e8s une classe"
+            ]
+        }, 
+        {
+            "conclusion": "Ajouter un \";\" apr\u00e8s classe/instruction/boucle conditionnelle", 
+            "conditions": [
+                "J'ai une erreur de syntaxe", 
+                "J'ai oubli\u00e9 un \";\" apr\u00e8s une instruction"
+            ]
+        }
+    ]
+}

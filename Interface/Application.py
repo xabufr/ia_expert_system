@@ -116,7 +116,7 @@ class Application(QObject):
 
     def load_rules(self):
         file_path, file_filter = QtGui.QFileDialog.getOpenFileName(self.__ui, self.tr("Select rules file"), "",
-                                                                   self.tr("Rules file") + " (*.rules);;")
+                                                                   self.tr("Rules file") + " (*.rules)")
         if file_path != "" and file_filter != "":
             self.__rules = RulesJsonSerializer.charge_rules(file_path)
             self.expert = ExpertSystem.Expert(self.__rules, self.__facts)

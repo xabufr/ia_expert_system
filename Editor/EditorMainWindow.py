@@ -4,6 +4,7 @@ from PySide.QtCore import QObject, QFile
 from PySide.QtGui import QInputDialog
 from PySide.QtGui import QFileDialog, QLineEdit
 from EditorModel import EditorModel, EditorModelPositionner
+from pip import index
 
 
 class EditorMainWindow(QObject):
@@ -50,8 +51,10 @@ class EditorMainWindow(QObject):
         self.__ui.actionSave_as.triggered.connect(self.__save_as)
 
     def __add_fact(self):
-        rule_conclusion, entered = QInputDialog.getText(self.__ui, self.tr("Enter rule conclusion label"),
-                                                        self.tr("Conclusion"))
+        labels = self.__model.get_labels()
+        rule_conclusion, entered = QInputDialog.getItem(self.__ui, self.tr("Enter rule conclusion label"),
+                                                        self.tr("Conclusion"),
+                                                        labels)
         if entered and rule_conclusion:
             self.__model.add_fact(rule_conclusion)
             self.__fill_facts()
@@ -117,7 +120,9 @@ class EditorMainWindow(QObject):
 
     def __add_condition_to_current_rule(self):
         if self.__current_model_position.rule_index is not None:
-            premise, valid = QInputDialog.getText(self.__ui, self.tr("Enter premise"), self.tr("Premise"))
+            labels = self.__model.get_labels()
+            premise, valid = QInputDialog.getItem(self.__ui, self.tr("Enter premise"), self.tr("Premise"),
+                                                  labels)
             if valid:
                 self.__model.add_condition_to_rule(premise, self.__current_model_position)
                 self.__load_premises_for_current_rule()
@@ -154,17 +159,26 @@ class EditorMainWindow(QObject):
             self.__ui.labels.addItem(label)
 
     def __rename_item(self, item):
-        new_name, is_entered = QInputDialog.getText(self.__ui, self.tr("Rename label"),
+        labels = self.__model.get_labels()
+        current_index = self.__get_index_of_item(item, labels)
+        new_name, is_entered = QInputDialog.getItem(self.__ui, self.tr("Rename label"),
                                                     self.tr("New label name for '%s'") % item.text(),
-                                                    QLineEdit.Normal, item.text())
+                                                    labels, current_index)
         if is_entered:
             self.__model.rename(item.text(), new_name)
             self.__current_model_position.reset()
             self.__fill_facts()
 
+    @staticmethod
+    def __get_index_of_item(item, labels):
+        for index in range(0, len(labels)):
+            if labels[index] == item.text():
+                return index
+        return 0
+
     def __load_from_file(self):
         file_path, file_filter = QFileDialog.getOpenFileName(self.__ui, self.tr("Select rules file"), "",
-                                                             self.tr("Rules file") + " (*.rules);;")
+                                                             self.tr("Rules file") + "(*.rules)")
         if file_path == "":
             return
         if file_filter == "":
@@ -181,7 +195,7 @@ class EditorMainWindow(QObject):
 
     def __save_as(self):
         file_path, file_filter = QFileDialog.getSaveFileName(self.__ui, self.tr("Select rules file"), "",
-                                                             self.tr("Rules file") + " (*.rules);;")
+                                                             self.tr("Rules file") + " (*.rules)")
         if file_filter != "" and file_path != "":
             self.__current_file = file_path
             self.__save()
