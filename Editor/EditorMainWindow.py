@@ -79,7 +79,7 @@ class EditorMainWindow(QObject):
 
     def __delete_facts(self):
         self.__model.del_fact(self.__current_model_position)
-        self.__fill_facts()
+        self.__update_helpers()
 
     def __fact_changed(self, fact_item):
         if fact_item:
