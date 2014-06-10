@@ -28,6 +28,16 @@ class Expert:
     def infer_backward(self):
         premises = self.__rules.find_premises()
         for premise in premises:
-            if not self.__facts.is_fact_set(premise):
+            if not self.__facts.is_fact_set(premise) and self.is_premise_util(premise):
                 return premise
         return None
+
+    def is_premise_util(self, premise):
+        for rule in self.__rules.find_rules_with_condition(premise):
+            is_util = True
+            for condition in rule.conditions:
+                if self.__facts.is_fact_set(condition) and not self.__facts.is_condition_valid(condition):
+                    is_util = False
+            if is_util:
+                return True
+        return False

@@ -2,6 +2,7 @@ import unittest
 from ExpertSystem import Expert
 from Facts import Facts
 from Rules import Rules, Rule
+from Logic.Facts import Facts
 
 
 class ExpertTest(unittest.TestCase):
@@ -70,6 +71,39 @@ class ExpertTest(unittest.TestCase):
             if conclusion == rule.conclusion:
                 return True
         return False
+
+    def test_skip_non_util_question(self):
+        self.facts = Facts()
+        self.rules = Rules()
+
+        self.rules.add_rule(Rule("C1", ["A", "B"]))
+        self.rules.add_rule(Rule("C1", ["A", "D"]))
+
+        self.facts.set_fact_value("A", False)
+
+        self.expert = Expert(self.rules, self.facts)
+
+        assert self.expert.infer_backward() is None
+
+    def test_skip_non_util_question_multiple_rules(self):
+        self.facts = Facts()
+        self.rules = Rules()
+
+        self.rules.add_rule(Rule("C1", ["A", "B"]))
+        self.rules.add_rule(Rule("C1", ["A", "D"]))
+        self.rules.add_rule(Rule("C2", ["A1", "E1"]))
+        self.rules.add_rule(Rule("C2", ["A1", "E2"]))
+        self.rules.add_rule(Rule("C2", ["A2", "F"]))
+
+        self.facts.set_fact_value("A", False)
+        self.facts.set_fact_value("E1", False)
+        self.facts.set_fact_value("E2", False)
+        self.facts.set_fact_value("A2", True)
+
+        self.expert = Expert(self.rules, self.facts)
+
+        assert self.expert.infer_backward() is "F"
+
 
 if __name__ == "__main__":
     unittest.main()

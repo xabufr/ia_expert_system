@@ -50,6 +50,9 @@ class Rules:
                 return False
         return True
 
+    def find_rules_with_condition(self, condition):
+        return [rule for rule in self.rules if condition in rule.conditions]
+
 
 class Rule:
     def __init__(self, conclusion, conditions):
