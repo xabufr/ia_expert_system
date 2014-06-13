@@ -1,6 +1,27 @@
 {
     "rules": [
         {
+            "conclusion": "Ajouter un caract\u00e8re de fermeture de bloc correspondant (']', '}', ')')", 
+            "conditions": [
+                "J'ai une erreur de syntaxe", 
+                "J'ai oubli\u00e9 de fermer un bloc de code ouvert avec '{'"
+            ]
+        }, 
+        {
+            "conclusion": "Ajouter un caract\u00e8re de fermeture de bloc correspondant (']', '}', ')')", 
+            "conditions": [
+                "J'ai une erreur de syntaxe", 
+                "J'ai oubli\u00e9 de fermer l'accesseur \u00e0 une case de tableau '['"
+            ]
+        }, 
+        {
+            "conclusion": "Ajouter un caract\u00e8re de fermeture de bloc correspondant (']', '}', ')')", 
+            "conditions": [
+                "J'ai une erreur de syntaxe", 
+                "J'ai oubli\u00e9 de fermer le bloc d'arguments d'une fonction '('"
+            ]
+        }, 
+        {
             "conclusion": "Ajouter un \";\" apr\u00e8s classe/instruction/boucle conditionnelle", 
             "conditions": [
                 "J'ai une erreur de syntaxe", 
@@ -20,6 +41,143 @@
                 "J'ai une erreur de syntaxe", 
                 "J'ai oubli\u00e9 un \";\" apr\u00e8s une instruction"
             ]
-        }
+        },
+	{
+		"conclusion": "Ajouter des ; à la fin de vos lignes", 
+			"conditions": [
+				"J'ai une erreur de syntaxe"
+				]
+	}, 
+	{
+		"conclusion": "Ajouter des ; dans votre boucle FOR : for(i;i<x;i++)", 
+		"conditions": [
+			"J'ai une erreur de syntaxe", 
+		"J'ai une boucle FOR"
+			]
+	}, 
+	{
+		"conclusion": "Ajouter un ; a la fin de votre boucle Do While : Do{  }while();", 
+		"conditions": [
+			"J'ai une erreur de syntaxe", 
+		"J'ai une boucle Do While"
+			]
+	},
+	{
+		"conclusion": "Ajouter un break a la fin de vos case", 
+		"conditions": [
+			"J'utilise un switch", 
+		"Mon programme execute plusieurs cas"
+			]
+	},
+	{
+		"conclusion": "Ajouter un default a la fin de vos case : defalut : VotreMethode(); break; ", 
+		"conditions": [
+			"J'utilise un switch", 
+		"Mon cas n'est pas traité par mes case mais je voudrais le traiter quand même"
+			]
+	},
+
+	{
+		"conclusion": "Avez-vous bien ortographié votre méthode ?", 
+		"conditions": [
+			"J'ai une erreur sur une méthode de classe", 
+		"Pas de membre du nom de ma classe"
+			]
+	},
+	{
+		"conclusion": "Il faut ajouter votre méthode dans votre .h", 
+		"conditions": [
+			"J'ai une sur une méthode de classe", 
+		"Pas de membre du nom de ma classe", 
+		"L'orthographe est bonne"
+			]
+	},
+	{
+		"conclusion": "Il faut ajouter vos dépendances dans le .cpp : #include 'include/maclasse.h' ", 
+		"conditions": [
+			"J'ai une erreur de 'scope' avec ma classe", 
+		"J'essaye de créer un objet"
+			]
+	},
+	{
+		"conclusion": "Il faut au préalable créer votre objet nomDeClasse Objet; ", 
+		"conditions": [
+			"J'ai une erreur de 'scope' avec ma classe", 
+		"J'utilise un objet"
+			]
+	},
+
+
+	{
+		"conclusion": "Vous devez changer le type de retour de votre fonction (int MaFonction(){}; ", 
+		"conditions": [
+			"Je ne peux pas retourner de valeur avec ma fonction",
+		"Je veux retourner un entier"
+			]
+	},
+	{
+		"conclusion": "Vous devez changer le type de retour de votre fonction (char MaFonction(){}; ", 
+		"conditions": [
+			"Je ne peux pas retourner de valeur avec ma fonction",
+		"Je veux retourner un caractere"
+			]
+	},
+	{
+		"conclusion": "Vous devez changer le type de retour de votre fonction (std::string MaFonction(){}; ", 
+		"conditions": [
+			"Je ne peux pas retourner de valeur avec ma fonction",
+		"Je veux retourner une chaine de caracteres"
+			]
+	},
+	{
+		"conclusion": "Vous devez changer le type de retour de votre fonction (float MaFonction(){}; ", 
+		"conditions": [
+			"Je ne peux pas retourner de valeur avec ma fonction",
+		"Je veux retourner un nombre à virgule"
+			]
+	},
+
+
+	{
+		"conclusion": "Vous devez utiliser des doubles guillets et non des simples quand vous initialisez votre variable", 
+		"conditions": [
+			"j'utilise std::string",
+		"Je ne peux pas convertir un string en const char*"
+			]
+	},
+	{
+		"conclusion": "Il faut inclure la lib iostream : #include <iostream>", 
+		"conditions": [
+			"j'utilise std::string",
+		"Je n'ai pas inclu iostream"
+			]
+	},
+	{
+		"conclusion": "Utilisez des guillemets simples et non des guillemets doubles", 
+		"conditions": [
+			"j'utilise un char",
+		"Je ne peux pas convertir un const char* en char "
+			]
+	},
+	{
+		"conclusion": "Il faut mettre des accolades ({}) pour donner une valeur à votre tableau : int myTab[10] = {0,1,2,3,4,5,6,7,8,9};", 
+		"conditions": [
+			"j'utilise des tableaux",
+		"Mon tableau ne peut pas être initialisé"
+			]
+	},
+	{
+		"conclusion": "Les tableaux en C commencent toujours à l’indice 0 et non pas à l'incide 1. Pour un : int myTab[10], le dernier indice sera à 9", 
+		"conditions": [
+			"j'utilise des tableaux",
+		"Mon programme se comporte de façon imprévisible quand je veux accéder à la derniere case de ce tableau"
+			]
+	},
+	{
+		"conclusion": "https://www.youtube.com/watch?v=cOsqUta2ol4&t=44s", 
+		"conditions": [
+			"J'ai une segfault"
+			]
+	}
     ]
 }
