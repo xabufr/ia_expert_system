@@ -26,10 +26,10 @@ class: middle, center
 
 ---
 
-#Chaînage avant
+class: center
+# Chaînage avant
 
-* Moteur d’inférence d’un système expert
-* Principe de déduction logique
+![image](5.png)
 
 ---
 
