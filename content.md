@@ -1,3 +1,6 @@
+name: groupe
+class: middle, center
+
 # Systèmes Experts
 
 * Yohan Rordiguez
@@ -37,18 +40,21 @@
 
 ---
 
+class: center
 # Amélioration chaînage arrière
 
 ![image](1.png)
 
 ---
 
+class: center
 # Amélioration chaînage arrière
 
 ![image](2.png)
 
 ---
 
+class: center
 # Amélioration chaînage arrière
 
 ![image](4.png)
