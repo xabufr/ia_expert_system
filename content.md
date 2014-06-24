@@ -89,4 +89,4 @@ class: center
 
 # Conclusion
 
-Merci de voitre attendtion
+Merci de votre attention
