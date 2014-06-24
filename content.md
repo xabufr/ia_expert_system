@@ -24,6 +24,9 @@ class: middle, center
 
 # Introduction
 
+* Un système expert est un logiciel informatique permettant de simuler l’inférence logique, en implémentant les mécanismes d’induction et de déduction. 
+
+
 ---
 
 class: center
