@@ -14,8 +14,8 @@ class: middle, center
 # Sommaire
 
 * Introduction
-* Châinage avant
-* Châinage arrière
+* Chaînage avant
+* Chaînage arrière
 * Base de connaissances
 * Idée d’amélioration
 * Conclusion
@@ -37,6 +37,13 @@ class: center
 
 * Induction logique
 * Recherche de questions à poser à l’utilisateur
+
+---
+
+# Base de connaissances
+
+* Logiques et connaissances "métier"
+* wip
 
 ---
 
