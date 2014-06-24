@@ -67,6 +67,7 @@ class: center
  * Probabilité d’application d’une règle
  * Peut modifier l’ordre d’application des règles
  * Résout les problèmes de logique parallèle
+* Apprentissage supervisé
 
 ---
 
