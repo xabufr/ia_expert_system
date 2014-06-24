@@ -14,9 +14,9 @@ class: middle, center
 # Sommaire
 
 * Introduction
-* Chaînage avant
-* Chaînage arrière
 * Base de connaissances
+* Chaînage arrière
+* Chaînage avant
 * Idée d’amélioration
 * Conclusion
 
@@ -31,21 +31,6 @@ class: middle, center
    * Une base de règles, 
    * Un moteur d’inférence
 
-
----
-
-class: center
-# Chaînage avant
-
-![image](5.png)
-
----
-
-# Chaînage arrière
-
-* Induction logique
-* Recherche de questions à poser à l’utilisateur
-
 ---
 
 # Base de connaissances
@@ -53,6 +38,13 @@ class: center
 * Logiques et connaissances "métier" d'un domaine spécifique
     * base de faits
     * base de règles
+
+---
+
+# Chaînage arrière
+
+* Induction logique
+* Recherche de questions à poser à l’utilisateur
 
 ---
 
@@ -77,17 +69,20 @@ class: center
 
 ---
 
+class: center
+# Chaînage avant
+
+![image](5.png)
+
+---
+
 # Idée d’amélioration
 
-* Appliquer une logique floue (utilisation de nombres réels)
- * Probabilité d’application d’une règle
- * Peut modifier l’ordre d’application des règles
- * Résout les problèmes de logique parallèle
+* Appliquer une logique floue (utilisation de nombres réels) -> Prioriser les guestions à poser
 * Apprentissage supervisé
 
 ---
-class: center
+class: center, middle
 # Conclusion
-
 
 # Merci de votre attention
