@@ -86,8 +86,8 @@ class: center
 * Apprentissage supervisé
 
 ---
-
+class: center
 # Conclusion
 
-class: center
-##Merci de votre attention
+
+# Merci de votre attention
