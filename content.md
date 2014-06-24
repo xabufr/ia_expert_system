@@ -7,6 +7,7 @@ class: middle, center
 * Damien Gabrielle
 * Alexandre Ramel
 * Bastien Chevriaut
+* Thomas Loubiou
 * Enzo Sandre
 
 ---
