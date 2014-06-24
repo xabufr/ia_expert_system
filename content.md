@@ -24,7 +24,12 @@ class: middle, center
 
 # Introduction
 
-* Un système expert est un logiciel informatique permettant de simuler l’inférence logique, en implémentant les mécanismes d’induction et de déduction. 
+* Un système expert est un logiciel informatique permettant de simuler l’inférence logique, en implémentant les mécanismes d’induction et de déduction.
+
+* Un système expert se déﬁnit par : 
+   * Une base de faits, 
+   * Une base de règles, 
+   * Un moteur d’inférence
 
 
 ---
