@@ -88,5 +88,5 @@ class: center
 ---
 
 # Conclusion
-
+class: center
 ##Merci de votre attention
