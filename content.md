@@ -79,7 +79,8 @@ class: center
 
 # Idée d’amélioration
 
-* Appliquer une logique floue (utilisation de nombres réels) -> Prioriser les guestions à poser
+* Appliquer une logique floue (utilisation de nombres réels) 
+ * Prioriser les questions à poser
 * Apprentissage supervisé
 
 ---
