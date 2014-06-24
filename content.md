@@ -42,8 +42,9 @@ class: center
 
 # Base de connaissances
 
-* Logiques et connaissances "métier"
-* wip
+* Logiques et connaissances "métier" d'un domaine spécifique
+    * base de faits
+    * base de règles
 
 ---
 
